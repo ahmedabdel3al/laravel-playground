@@ -80,7 +80,7 @@ class User extends Authenticatable
                 static::$dispatcher->forget("eloquent.{$event}: ".static::class);
             }
         }
-        foreach (array_values($instance->dispatchesEvents) as $event) {
+        foreach ($events as $event) {
             if (in_array(array_values($instance->dispatchesEvents), $instance->getObservableEvents())) {
                 static::$dispatcher->forget($event);
             }
