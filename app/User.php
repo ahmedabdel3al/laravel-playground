@@ -36,4 +36,54 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Execute a callback without firing One Or More model events for any model type.
+     *
+     * @param  callable  $callback
+     * @return mixed
+     */
+    public static function withoutOneOrMoreEvents(array $event =[], callable $callback)
+    {
+        $dispatcher = static::getEventDispatcher();
+        $resetDispatcher = clone $dispatcher ;
+        if (!isset($event)) {
+            static::unsetEventDispatcher();
+        } else {
+            static::removeEventListeners($event);
+        }
+      
+        try {
+            return $callback();
+        } finally {
+            if ($dispatcher) {
+                static::setEventDispatcher($resetDispatcher);
+            }
+        }
+    }
+
+    /**
+        * Remove spasific of the event listeners for the model.
+        *
+        * @return void
+        */
+    public static function removeEventListeners($events)
+    {
+        if (! isset(static::$dispatcher)) {
+            return;
+        }
+
+        $instance = new static;
+    
+        foreach ($events as $event) {
+            if (in_array($event, $instance->getObservableEvents())) {
+                static::$dispatcher->forget("eloquent.{$event}: ".static::class);
+            }
+        }
+        foreach (array_values($instance->dispatchesEvents) as $event) {
+            if (in_array(array_values($instance->dispatchesEvents), $instance->getObservableEvents())) {
+                static::$dispatcher->forget($event);
+            }
+        }
+    }
 }
