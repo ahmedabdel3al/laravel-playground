@@ -19,6 +19,9 @@ import store from './store'
 
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
+Vue.use(PerfectScrollbar)
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 

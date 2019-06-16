@@ -1,24 +1,40 @@
 <template>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">User Component</div>
-            <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item">Cras justo odio</li>
-                    <li class="list-group-item">Dapibus ac facilisis in</li>
-                    <li class="list-group-item">Morbi leo risus</li>
-                    <li class="list-group-item">Porta ac consectetur ac</li>
-                    <li class="list-group-item">Vestibulum at eros</li>
-                </ul>
-            </div>
-        </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">User Component</div>
+      <div class="card-body">
+        <ul class="list-group">
+          <li class="list-group-item"   v-for="user in users" :key="user.id" :class="{'active':currentUser.id==user.id  }">
+            <span @click="SetCurrentUser(user)">{{user.name}}</span>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </template>
 <script>
-    export default {
-        
-    };
-
+import { mapActions, mapGetters,mapMutations} from "vuex";
+export default {
+  created() {
+    this.getUsers();
+  },
+  computed: {
+    ...mapGetters({ users: "users/getUsers" , currentUser:"users/getCurrentUser" } )
+  },
+  methods: {
+    ...mapActions({
+      getUsers: "users/setUsers",
+      getMessage:"message/getMessage"
+    }),
+    ...mapMutations({
+         setUser: "users/setUser"
+    }),
+    SetCurrentUser(user) {
+      this.getMessage(user)
+       this.setUser({user})
+    }
+  }
+};
 </script>
 <style lang="scss">
 </style>
