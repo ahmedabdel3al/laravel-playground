@@ -1,11 +1,9 @@
-/* <template>
+<template>
     <div class="col-md-8">
          <div class="card">
              <div class="card-header" v-if="currentUser.user">{{currentUser.user.name}} </div>
              <div class="card-header" v-else>Chat components</div>
                 <div class="card-body"> 
-                    <div class="scrollbable" v-if="currentUser.user" >
-                    <infinite-loading  spinner="waveDots" direction="top" @infinite="infiniteHandler"></infinite-loading>            
                        <ul class="list-group">
                         <li class="list-group-item"   v-for="message in messages.data" :key="message.id">
                            <span>{{message.body}}</span>
@@ -41,14 +39,9 @@ export default {
         sentMessage(){
            console.log(this.message)
         },
-        infiniteHandler($state){
-        
-        }
+      
     },
-    updated() {
-        var messageBody = document.querySelector('.scrollbable');
-        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
-    }
+   
 }
 
 </script>
