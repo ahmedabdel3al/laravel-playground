@@ -1,5 +1,6 @@
 <?php
-use App\User;
+use App\Post;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,16 @@ use App\User;
 */
 
 Route::get('/', function () {
-    User::withoutFireSpecificEvents(['creating'], function () {
-        factory(User::class)->create();
-    });
-    factory(User::class)->create();
+    /*  $post=factory(Post::class)->create();
+    $post2=factory(Post::class)->create(['title'=>$post->title]);
+    dd($post, $post2); */ 
+    /* $post = Post::first();
+    $post->title = "ahmed elsayed ";
+    $post->save();
+    return $post ;  */
+    
+     $post = Post::find(28);
+    $post->title = "ahmed elsayed ";
+    $post->save();
+    return $post ;  
 });
