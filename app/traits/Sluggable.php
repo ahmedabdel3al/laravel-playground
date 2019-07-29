@@ -29,35 +29,46 @@ trait Sluggable
      */
     public static function handleSlugging(Model $model)
     {
-        //check if model has sluggable attribute
-        if (!isset(static::$sluggable) ||!isset(static::$sluggable['slugName']) || !isset(static::$sluggable['slugRef'])) {
-            return ;
+        if (isset(static::$sluggable)) {
+            foreach (static::$sluggable as $slug) {
+                if (!isset($slug['slugName']) || !isset($slug['slugRef'])) {
+                    return ;
+                }
+                static::slugging($model, $slug['slugName'], $slug['slugRef']);
+            }
         }
-        return static::slugging($model);
     }
     /**
-     * Handle Set Slugging Case  
+     * Handle Set Slugging Case
      *
      * @param Model $model
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public static function slugging(Model $model)
+    public static function slugging(Model $model, $slugName, $slugRef)
     {
-        $slug = Str::slug($model->{static::$sluggable['slugRef']});
-        if ((static::class)::where(static::$sluggable['slugName'], $slug)->exists()) {
-            $slug .=  '-'. static::generateUniqueNumber();
-             
-        }
-        $model->{static::$sluggable['slugName']} = $slug;
+        $slug = Str::slug($model->{$slugRef});
+        $value  =self::generateUniqueSlug($slugName, $slug);
+        $model->$slugName = $value ;
     }
     /**
      * Generate Unique Nummber
      *
      * @return mixed
      */
-    public static function generateUniqueNumber()
+    public static function generateUniqueSlug($slugName, $slugValue)
     {
-        return time().random_int(1000000, 9999999);
+        $slug =  (static::class)::where($slugName, '=', $slugValue)
+              ->orWhere($slugName, 'LIKE', $slugValue . '-' . '%')->orderBy('created_at', 'desc');
+        if (!$slug->exists()) {
+            return $slugValue ;
+        }
+        $slug = $slug->first();
+        $array_slug  =  explode('-', $slug->{$slugName});
+        $number = array_reverse($array_slug)[0] ;
+        if (is_numeric($number)) {
+            $value = str_replace('-' .$number, '', $slug->{$slugName});
+            return $value. '-' . ++$number ;
+        }
+        return $slug->{$slugName} . '-1';
     }
-   
 }

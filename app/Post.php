@@ -11,8 +11,9 @@ class Post extends Model
     protected $fillable = ['title'];
     
     protected static $sluggable = [
-        'slugName'=>'slug' ,
-        'slugRef'=>'title'
+        ['slugName'=>'slug' ,
+        'slugRef'=>'title'],
+
     ];
     
 }
